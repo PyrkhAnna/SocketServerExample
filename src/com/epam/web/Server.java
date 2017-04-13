@@ -1,13 +1,13 @@
 package com.epam.web;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+//import java.io.InputStream;
+//import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-	private static final int DEFAULT_PORT = 9999;
+	private static final int DEFAULT_PORT = 7777;
 	
 
 	// the shutdown command received
@@ -31,9 +31,9 @@ public class Server {
 		
 		// Loop waiting for a request
 		while (!shutdown) {
-			Socket socket = null;
-			InputStream input = null;
-			OutputStream output = null;
+			//Socket socket = null;
+		//	InputStream input = null;
+		//	OutputStream output = null;
 			try {
 				Socket clientSocket = serverSocket.accept();
 				/*
@@ -45,15 +45,16 @@ public class Server {
 				session.run();
 				
 				// Close the socket
-				socket.close();
+			//	socket.close();
 
 				// check if the previous URI is a shutdown command
 				shutdown = session.ifShutdownCommand();
 			} catch (Exception e) {
+				e.printStackTrace();
 				System.out.println("Failed to establish connection.");
 				System.out.println(e.getMessage());
 				continue;
-			}
+			} 
 
 		}
 	}
