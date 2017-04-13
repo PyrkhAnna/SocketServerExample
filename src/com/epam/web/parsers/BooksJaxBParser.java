@@ -1,4 +1,4 @@
-package com.epam.web.entity;
+package com.epam.web.parsers;
 
 import java.io.File;
 import java.util.List;
@@ -6,6 +6,9 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import com.epam.web.entity.Book;
+import com.epam.web.entity.Books;
 
 public class BooksJaxBParser {
 	// private static final String FILE_PATH = "src\\main\\resources\\usersbase.xml";
@@ -24,11 +27,11 @@ public class BooksJaxBParser {
         return booksList;
     }
     
-    public void marshallList( List<Book> booksList) {
+    public void marshallList( List<Book> booksList, String path) { ///???
         try {
             JAXBContext jc = JAXBContext.newInstance(Books.class);
             Marshaller um = jc.createMarshaller();
-            um.marshal(booksList, new File(FILE_PATH));;
+            um.marshal(booksList, new File(FILE_PATH)); ///???
            
         } catch (Exception e) {
             System.out.println(e.getMessage());
