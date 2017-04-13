@@ -58,7 +58,7 @@ public class Request {
 
 		url = getURIFromHeader(str[0]);
 		contentType = getContentTypeFromHeader();
-		methodType = getMethod(header.get(0));
+		methodType = getMethod(header.get(0).trim());
 		System.out.println(url);
 		//System.out.println(contentType);
 		System.out.println(methodType);

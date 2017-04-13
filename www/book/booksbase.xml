@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://http://epam.com.web">
+	<book>
+		<id>1</id>
+		<author>John</author>
+	</book>
+	<book>
+		<id>2</id>
+		<author>Leo</author>
+	</book>
+	<book>
+		<id>3</id>
+		<author>Sam</author>
+	</book>
+	<book>
+		<id>4</id>
+		<author>Carl</author>
+	</book>
+	<book>
+		<id>5</id>
+		<author>Max</author>
+	</book>
+</books>
+

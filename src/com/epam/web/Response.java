@@ -40,18 +40,36 @@ public class Response {
 	}
 
 	public void sendMessage() {
+		String method = request.getMethodType();
 		try {
-			formMessage();
-			if (message!=null) {
+			formMessage(method);
+			if (message != null) {
 				output.write(message.getBytes());
-				message=null;
+				message = null;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void formMessage() throws IOException {
+	public void formMessage(String method) throws IOException {
+		switch (method) {
+		case "GET":
+			doGet();
+			break;
+		case "POST":
+			doPost();
+			break;
+		case "PUT":
+			doPut();
+			break;
+		case "DELETE":
+			doDelete();
+			break;
+		}
+	}
+
+	private void doGet() throws IOException {
 		String url = request.getUrl();
 		InputStream strm = Server.class.getResourceAsStream(url);
 		int code = (strm != null) ? 200 : 404;
@@ -59,12 +77,10 @@ public class Response {
 		if (code == 200) {
 			String body = getBody();
 			if (body != null) {
-				message=header+body;
+				message = header + body;
 			} else {
 				// file not found
-				String errorMessage = "HTTP/1.1 404 File Not Found\r\n" + "Content-Type: text/html\r\n"
-						+ "Content-Length: 23\r\n" + "\r\n" + "<h1>File Not Found</h1>";
-				message=errorMessage;
+				message = getErrorMessage();
 			}
 			strm.close();
 		}
@@ -111,6 +127,22 @@ public class Response {
 		default:
 			return "Internal Server Error";
 		}
+	}
+	private String getErrorMessage() {
+		return "HTTP/1.1 404 File Not Found\r\n" + "Content-Type: text/html\r\n"
+				+ "Content-Length: 23\r\n" + "\r\n" + "<h1>File Not Found</h1>";
+	}
+
+	private void doPost() {
+
+	}
+
+	private void doPut() {
+
+	}
+
+	private void doDelete() {
+
 	}
 
 }
