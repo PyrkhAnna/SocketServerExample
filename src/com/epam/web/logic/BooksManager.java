@@ -1,7 +1,8 @@
-package com.epam.web.entity;
+package com.epam.web.logic;
 
 import java.util.List;
 
+import com.epam.web.entity.Book;
 import com.epam.web.parsers.BooksJaxBParser;
 
 public class BooksManager {

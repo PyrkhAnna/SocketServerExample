@@ -1,6 +1,7 @@
 package com.epam.web;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Date;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,18 +26,6 @@ public class Response {
 	public Response(OutputStream output) {
 		this.output = output;
 		message = null;
-	}
-
-	public void setRequest(Request request) {
-		this.request = request;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public void sendMessage() {
@@ -70,11 +59,28 @@ public class Response {
 	}
 
 	private void doGet() throws IOException {
-		String url = request.getUrl();
+		String url = request.getUri();
 		InputStream strm = Server.class.getResourceAsStream(url);
 		int code = (strm != null) ? 200 : 404;
 		String header = getHeader(code);
+		PrintStream answer = new PrintStream(output, true, "UTF-8");
+		answer.print(header);
 		if (code == 200) {
+			int count = 0;
+			byte[] buffer = new byte[1024];
+			while ((count = strm.read(buffer)) != -1) {
+				output.write(buffer, 0, count);
+			}
+			strm.close();
+		}
+		/*
+		String header = getHeader(code);
+		
+		if (code == 200) {
+			
+			
+			
+			
 			String body = getBody();
 			if (body != null) {
 				message = header + body;
@@ -83,7 +89,19 @@ public class Response {
 				message = getErrorMessage();
 			}
 			strm.close();
+		} else {
+			// file not found
+			message = getErrorMessage();
 		}
+		if (code == 200) { //read source
+				int count = 0;
+				byte[] buffer = new byte[1024];
+				while ((count = strm.read(buffer)) != -1) {
+					output.write(buffer, 0, count);
+				}
+				strm.close();
+			}
+		*/
 	}
 
 	private String getHeader(int code) {
@@ -98,7 +116,7 @@ public class Response {
 		byte[] bytes = new byte[BUFFER_SIZE];
 		FileInputStream fis = null;
 		StringBuilder body = new StringBuilder();
-		File file = new File(System.getProperty("user.dir") + DEFAULT_FILES_DIR + request.getUrl());
+		File file = new File(System.getProperty("user.dir") + DEFAULT_FILES_DIR + request.getUri());
 		if (file.exists()) {
 			fis = new FileInputStream(file);
 			int ch = fis.read(bytes, 0, BUFFER_SIZE);
@@ -135,6 +153,18 @@ public class Response {
 	private String getErrorMessage() {
 		return "HTTP/1.1 404 File Not Found\r\n" + "Content-Type: text/html\r\n"
 				+ "Content-Length: 23\r\n" + "\r\n" + "<h1>File Not Found</h1>";
+	}
+
+	public void setRequest(Request request) {
+		this.request = request;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	private void doPost() {

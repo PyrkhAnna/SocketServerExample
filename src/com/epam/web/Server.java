@@ -11,7 +11,7 @@ public class Server {
 	
 
 	// the shutdown command received
-	private static boolean shutdown = false;
+//	private static boolean shutdown = false;
 
 	public static void main(String[] args) {
 		/* Если аргументы отсутствуют, порт принимает значение поумолчанию */
@@ -30,10 +30,8 @@ public class Server {
 		}
 		
 		// Loop waiting for a request
-		while (!shutdown) {
-			//Socket socket = null;
-		//	InputStream input = null;
-		//	OutputStream output = null;
+		//while (!shutdown) {
+			 while (true) {
 			try {
 				Socket clientSocket = serverSocket.accept();
 				/*
@@ -41,14 +39,14 @@ public class Server {
 				 * объект и отдельный поток
 				 */
 				ClientSession session = new ClientSession(clientSocket);
-				//new Thread(session).start();
-				session.run();
+				new Thread(session).start();
+				//session.run();
 				
 				// Close the socket
 			//	socket.close();
 
 				// check if the previous URI is a shutdown command
-				shutdown = session.ifShutdownCommand();
+		//		shutdown = session.ifShutdownCommand();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Failed to establish connection.");

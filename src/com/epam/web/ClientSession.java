@@ -15,7 +15,7 @@ public class ClientSession implements Runnable {
 	private OutputStream output = null;
 	private Request request;
 	private Response response;
-	private static final String SHUTDOWN_COMMAND = "/SHUTDOWN";
+	//private static final String SHUTDOWN_COMMAND = "/SHUTDOWN";
 	
 
 	public ClientSession(Socket socket) throws IOException {
@@ -28,6 +28,7 @@ public class ClientSession implements Runnable {
 		input = socket.getInputStream();
 		/* Получаем поток вывода, для отправки сообщений клиенту */
 		output = socket.getOutputStream();
+		run();
 	}
 
 	@Override
@@ -49,8 +50,7 @@ public class ClientSession implements Runnable {
 		
 	}
 	
-	public boolean ifShutdownCommand() {
-		return request.getUrl().equals(SHUTDOWN_COMMAND);
-		
-	}
+	/*public boolean ifShutdownCommand() {
+		return request.getUri().equals(SHUTDOWN_COMMAND);
+	}*/
 }

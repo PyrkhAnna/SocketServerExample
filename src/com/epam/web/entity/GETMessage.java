@@ -4,55 +4,66 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.epam.web.Server;
 
 public class GETMessage extends Message{
 	private int code;
+	private String uri;
+	private Map<String,String> param;
+	private String askContentType;
 	
-	public GETMessage(String url, String askContentType, List<String> requestBody) {
-		super(url, askContentType, requestBody);
+	public GETMessage(String uri, String askContentType) {
+		super();
+		this.uri= uri;
+		this.askContentType = askContentType;
 	}
-	
+	private boolean checkUri() {
+		
+		return false;
+	}
 	public void flushBuffer() throws IOException {
-		// private void doGet() throws IOException {
-		InputStream strm = Server.class.getResourceAsStream(url);
+		InputStream strm = Server.class.getResourceAsStream(getUrlFromUri(uri));
 		code = (strm != null) ? 200 : 404;
+		
 		String header;
 		String body = getBody();
 		if (code == 200) {
-
 			if (body != null) {
 				header = getHeader(code);
 			} else {
 				// file not found
-				header = getHeader(404);
+				header = getErrorMessage();
 			}
 			strm.close();
-			// }
-		//	this.body = body;
+		} else {
+			// file not found
+			header = getErrorMessage();
 		}
 	}
-
-	private void doGet() throws IOException {
-		InputStream strm = Server.class.getResourceAsStream(url);
-		code = (strm != null) ? 200 : 404;
-		String header;
-		String body = getBody();
-		if (code == 200) {
-
-			if (body != null) {
-				header = getHeader(code);
-			} else {
-				// file not found
-				header = getHeader(404);
-			}
-			strm.close();
+	private String getUrlFromUri(String uri) {
+		String url [] = uri.split("?");
+		if (url.length>1) {
+			getParam(url);
 		}
-		//this.body = body;
+		return url[0];
 	}
-
+	private void getParam(String [] url) {
+		param = new HashMap<String,String>();
+		String[] str;
+		for (int i =1; i> url.length;i++) {
+			str = url[i].split("=");
+			param.put(str[0], str[1]);
+		}
+	}
+	private String getErrorMessage() {
+		return "HTTP/1.1 404 File Not Found\r\n" + "Content-Type: text/html\r\n"
+				+ "Content-Length: 23\r\n" + "\r\n" + "<h1>File Not Found</h1>";
+	}
+	
 	private String getHeader(int code) {
 		StringBuilder header = new StringBuilder();
 		header.append(protocol + code + " " + strCode + "\r\n");
@@ -85,7 +96,9 @@ public class GETMessage extends Message{
 			fis.close();
 		return body.toString();
 	}
+	
 	@Override
 	public void buildMessage() {
 	}
+	
 }

@@ -2,28 +2,60 @@ package com.epam.web;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 
 public class Request {
-
+	private final static String CONTENT_TYPE = "Content-Type:";
+	private final static String CONTENT_LENGTH = "Content-Length:";
+	private final static String ACCEPT_TYPE = "Accept:";
+	//private final static String METHOD_TYPE = "methodType";
+	//private final static String URI = "uri";
 	private InputStream input;
-	private String url;
-	private List<String> header;
-	private List<String> body;
-	private String contentType;
 	private String methodType;
-
-
+	private String uri;
+	private List<String> body;
+	private Map<String, String> headerFields;
 
 	public Request(InputStream input) {
 		this.input = input;
-		header = new ArrayList<String>();
 		body = new ArrayList<String>();
+		headerFields = new HashMap<String, String>();
 	}
 
 	public void parse() throws IOException {
-		// Read a set of characters from the socket
+		List<String> header = new ArrayList<String>();
+		String[] str = flushBuffer();
+		int i = 0;
+		boolean flag = false;
+		while (i < str.length) {
+			if (str[i].isEmpty()) {
+				i++;
+				flag = true;
+			}
+			if (!flag) {
+				header.add(str[i]);
+			} else {
+				//body.add(str[i]);
+			}
+			i++;
+		}
+		// System.out.println(header.toString());
+		// System.out.println(body.toString());
+		headerFields.put(CONTENT_TYPE, getFromHeader(header, CONTENT_TYPE));
+		headerFields.put(CONTENT_LENGTH, getFromHeader(header, CONTENT_LENGTH));
+		headerFields.put(ACCEPT_TYPE, getFromHeader(header, ACCEPT_TYPE));
+		//headerFields.put(URI, getURIFromHeader(str[0]));
+		//headerFields.put(METHOD_TYPE, getMethod(header.get(0).trim()));
+		uri = getURIFromHeader(str[0]);
+		methodType = getMethod(header.get(0).trim());
+		System.out.println(uri);
+		System.out.println(methodType);
+	}
+
+	private String[] flushBuffer() {
 		StringBuffer request = new StringBuffer(2048);
 		int i;
 		byte[] buffer = new byte[2048];
@@ -37,37 +69,17 @@ public class Request {
 			request.append((char) buffer[j]);
 		}
 		System.out.println(request.toString());
-		String[] str = request.toString().split("\r\n");
-
-		i = 0;
-		boolean flag = false;
-		while (i < str.length) {
-			if (str[i].isEmpty()) {
-				i++;
-				flag = true;
-			}
-			if (!flag) {
-				header.add(str[i]);
-			} else {
-				body.add(str[i]);
-			}
-			i++;
-		}
-		System.out.println(header.toString());
-		// System.out.println(body.toString());
-
-		url = getURIFromHeader(str[0]);
-		contentType = getContentTypeFromHeader();
-		methodType = getMethod(header.get(0).trim());
-		System.out.println(url);
-		//System.out.println(contentType);
-		System.out.println(methodType);
+		return request.toString().split("\r\n");
 	}
 
 	private String getURIFromHeader(String header) {
 		int from = header.indexOf(" ") + 1;
 		int to = header.indexOf(" ", from);
-		String uri = header.substring(from, to);
+		String uri;
+		if (to!=-1) {
+		 uri = header.substring(from, to);
+		} else 
+			uri = header.substring(from, header.length()-1);
 		int paramIndex = uri.indexOf("?");
 		if (paramIndex != -1) {
 			uri = uri.substring(0, paramIndex);
@@ -75,11 +87,11 @@ public class Request {
 		return uri;
 	}
 
-	private String getContentTypeFromHeader() {
+	private String getFromHeader(List<String> header, String marker) {
 		int from;
 		String value = null;
 		for (String s : header) {
-			if (s.startsWith("Content-Type:")) {
+			if (s.startsWith(marker)) {
 				from = s.indexOf(" ") + 1;
 				value = s.substring(from, s.length());
 			}
@@ -92,24 +104,36 @@ public class Request {
 		return str.substring(0, to);
 	}
 
-	public String getUrl() {
-		return url;
+	public Map<String, String> getHeaderFields() {
+		return headerFields;
 	}
 
-	public List<String> getHeader() {
-		return header;
+	public void setHeaderFields(Map<String, String> headerFields) {
+		this.headerFields = headerFields;
 	}
 
 	public List<String> getBody() {
 		return body;
 	}
 
-	public String getContentType() {
-		return contentType;
+	public void setBody(List<String> body) {
+		this.body = body;
 	}
 
 	public String getMethodType() {
 		return methodType;
+	}
+
+	public void setMethodType(String methodType) {
+		this.methodType = methodType;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 }
