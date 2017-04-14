@@ -13,104 +13,36 @@ import javax.servlet.ServletOutputStream;
 
 import com.epam.web.Server;
 
-public class Message {
-	private static final int BUFFER_SIZE = 1024;
-	private static final String DEFAULT_FILES_DIR = "/www";
-	private static final String FILE_BASE = "/booksbase.xml";
+public abstract class Message {
+	protected static final int BUFFER_SIZE = 1024;
+	protected static final String DEFAULT_FILES_DIR = "/www";
+	protected static final String FILE_BASE = "/booksbase.xml";
 	
-	private String protocol = "HTTP/1.1 ";
+	protected String protocol = "HTTP/1.1 ";
 	private int code;
-	private String strCode;
-	private String date = "Date: " + new Date().toString() + "\r\n";
-	private String server = "http://localhost:port (Win32)\r\n";
-	private String contentLength = "Content-Length: ";
-	private String contentType = "Content-Type: ";
-	private String connection = "Connection: Closed\r\n";
+	protected String strCode;
+	protected String date = "Date: " + new Date().toString() + "\r\n";
+	protected String server = "Server: Server (Win32)\r\n";
+	protected String contentLength = "Content-Length: ";
+	protected String contentType = "Content-Type: ";
+	protected String connection = "Connection: Closed\r\n";
 	private String emptyLine = "\r\n";
 	private String body;
-	private String method;
-	private String url;
-	// private String askContentType;
+	protected String url;
 	private List<String> requestBody;
 
-	public Message(String method, String url, String askContentType, List<String> requestBody) {
+	public Message() {
 		super();
-		this.method = method;
+	}
+
+	public Message(String url, String askContentType, List<String> requestBody) {
+		super();
 		this.url = url;
 		this.contentType = askContentType;
 		this.requestBody = requestBody;
 	}
 
-	public void flushBuffer() throws IOException {
-		// private void doGet() throws IOException {
-		InputStream strm = Server.class.getResourceAsStream(url);
-		code = (strm != null) ? 200 : 404;
-		String header;
-		String body = getBody();
-		if (code == 200) {
-
-			if (body != null) {
-				header = getHeader(code);
-			} else {
-				// file not found
-				header = getHeader(404);
-			}
-			strm.close();
-			// }
-			this.body = body;
-		}
-	}
-
-	private void doGet() throws IOException {
-		InputStream strm = Server.class.getResourceAsStream(url);
-		code = (strm != null) ? 200 : 404;
-		String header;
-		String body = getBody();
-		if (code == 200) {
-
-			if (body != null) {
-				header = getHeader(code);
-			} else {
-				// file not found
-				header = getHeader(404);
-			}
-			strm.close();
-		}
-		this.body = body;
-	}
-
-	private String getHeader(int code) {
-		StringBuilder header = new StringBuilder();
-		header.append(protocol + code + " " + strCode + "\r\n");
-		header.append(date);
-		header.append("Accept-Ranges: none\r\n");
-		header.append(server);
-		header.append(contentLength);
-		header.append(contentType);
-		header.append(connection);
-		return header.toString();
-	}
-
-	private String getBody() throws IOException {
-		byte[] bytes = new byte[BUFFER_SIZE];
-		FileInputStream fis = null;
-		StringBuilder body = new StringBuilder();
-		File file = new File(System.getProperty("user.dir") + DEFAULT_FILES_DIR + url+FILE_BASE);
-		if (file.exists()) {
-			fis = new FileInputStream(file);
-			int ch = fis.read(bytes, 0, BUFFER_SIZE);
-			if (ch != -1) {
-				for (int j = 0; j < ch; j++) {
-					body.append((char) bytes[j]);
-				}
-			}
-		} else {
-			return null;
-		}
-		if (fis != null)
-			fis.close();
-		return body.toString();
-	}
+	public abstract void buildMessage();
 
 	public int getBufferSize() {
 		// TODO Auto-generated method stub
