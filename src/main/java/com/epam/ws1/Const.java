@@ -7,7 +7,9 @@ public class Const {
 			+ Const.FILE_BASE;
 	public static final String TEMP_FILE_PATH = Const.DEFAULT_FILES_DIR
 			+ "/1.xml";
-	public static final String DEFAULT_FILES_DIR = "/www"; //\src\main\resources\www\
+	public static final String DEFAULT_FILES_DIR = "/www"; 
+	public static final String DEFAULT_FILES_DIR_FOR_READING_FILES = "/src/main/resources"; 
+	//\src\main\resources\www\
 	public static final String FILE_BASE = "/book/booksbase.xml";
 	public static final int BUFFER_SIZE = 1024;
 	public static final String METHOD_TYPE = "Method";

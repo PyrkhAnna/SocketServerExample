@@ -29,10 +29,10 @@ public class GETAnalyzer implements Analyzer {
 
 	@Override
 	public String getMessage() {
-		String filePath = null;
+		String fileUrl = null;
 		int contentLength = 0;
 		try {
-			filePath = analyzeURL(getUrlFromUri(uri));
+			fileUrl = analyzeURL(getUrlFromUri(uri));
 			// + getFileTypeFromAcceptField(contentType);
 		} catch (ValidationException e) {
 			System.out.println(e);
@@ -40,22 +40,24 @@ public class GETAnalyzer implements Analyzer {
 			code = 500;
 		}
 		if (code == 200) {
-			body = getSource(filePath);
+			body = getSource(fileUrl);
 			contentLength = body.length();
 		}
 		Header header = new Header(code, contentLength, contentType);
 		return body != null ? header.buildHeader() +Const.NEW_LINE+ body : header.buildHeader();
 	}
 
-	private String getSource(String filePath) {
+	private String getSource(String fileUrl) {
 		InputStream strm = null;
 		String body = null;
 		try {
-			if (filePath != null) {
-				strm = Server.class.getResourceAsStream(filePath);
+			if (fileUrl != null) {
+				strm = Server.class.getResourceAsStream(fileUrl);
 			}
 			code = (strm != null) ? 200 : 404;
 			if (code == 200) {
+				String filePath= Const.DEFAULT_FILES_DIR_FOR_READING_FILES+fileUrl;
+				
 				body =readFile(filePath);
 				strm.close();
 			}
@@ -92,18 +94,18 @@ public class GETAnalyzer implements Analyzer {
 
 	private String analyzeURL(String url) throws ValidationException {
 		// return file if exist, check accept before
-		String filePath = url;
+	//	String fileUrl = url;
 
 		if (url.equals("/")) {
 			code = 404;
 		} else {
 			if (param.size() == 0) {
-				if (url.equals("/book")) {
+				if (url.equals("/book")||url.equals("/book/")) {
 					code = 200;
-					return filePath = Const.FILE_BASE;
+					return url = Const.DEFAULT_FILES_DIR+Const.FILE_BASE;
 				} else {
 					code = 200;
-					filePath=Const.DEFAULT_FILES_DIR+url;
+					url=Const.DEFAULT_FILES_DIR+url;
 				}
 			} else {
 				// findBook
@@ -112,11 +114,11 @@ public class GETAnalyzer implements Analyzer {
 				if (book != null) {
 					code = 200;
 					bs.parseToXML(book);
-					filePath = Const.TEMP_FILE_PATH;// == url
+					url = Const.TEMP_FILE_PATH;// == url
 				}
 			}
 		}
-		return filePath;
+		return url;
 	}
 /*
 	private String getFileTypeFromAcceptField(String acceptField) {
