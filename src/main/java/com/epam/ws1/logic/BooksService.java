@@ -49,6 +49,6 @@ public class BooksService {
 		parser.marshall(books);
 	}
 	public void parseToXML(Book book) {
-		parser.marshall(books);
+		parser.marshall(book);
 	}
 }

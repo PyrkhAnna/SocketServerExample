@@ -1,25 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<books xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://http://epam.com.web">
-	<book>
-		<id>1</id>
-		<author>John</author>
-	</book>
-	<book>
-		<id>2</id>
-		<author>Leo</author>
-	</book>
-	<book>
-		<id>3</id>
-		<author>Sam</author>
-	</book>
-	<book>
-		<id>4</id>
-		<author>Carl</author>
-	</book>
-	<book>
-		<id>5</id>
-		<author>Max</author>
-	</book>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<books>
+    <book>
+        <author>John</author>
+        <id>1</id>
+    </book>
+    <book>
+        <author>Leo</author>
+        <id>2</id>
+    </book>
+    <book>
+        <author>Sam</author>
+        <id>3</id>
+    </book>
+    <book>
+        <author>Carl</author>
+        <id>4</id>
+    </book>
+    <book>
+        <author>Max</author>
+        <id>5</id>
+    </book>
 </books>
-

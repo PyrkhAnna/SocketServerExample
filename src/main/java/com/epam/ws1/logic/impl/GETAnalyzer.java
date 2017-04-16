@@ -94,8 +94,7 @@ public class GETAnalyzer implements Analyzer {
 
 	private String analyzeURL(String url) throws ValidationException {
 		// return file if exist, check accept before
-	//	String fileUrl = url;
-
+	
 		if (url.equals("/")) {
 			code = 404;
 		} else {
@@ -114,7 +113,7 @@ public class GETAnalyzer implements Analyzer {
 				if (book != null) {
 					code = 200;
 					bs.parseToXML(book);
-					url = Const.TEMP_FILE_PATH;// == url
+					url = Const.DEFAULT_FILES_DIR+ Const.TEMP_FILE;
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 package com.epam.ws1.parser;
 
 import java.io.File;
-import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -36,12 +35,13 @@ public class BooksJaxBParser {
 		}
 	}
 
-	public Book unmarshallBook(InputStream is) { // read from stream
+	public Book unmarshallBook() { // read from stream
 		Book book = null;
 		try {
+			File file = new File(Const.TEMP_FILE_PATH);
 			JAXBContext context = JAXBContext.newInstance(Books.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			book = (Book) unmarshaller.unmarshal(is);
+			book = (Book) unmarshaller.unmarshal(file);
 		} catch (JAXBException e) {
 			System.out.println(e.getMessage());
 		}
