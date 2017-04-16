@@ -36,4 +36,8 @@ public class ClientSession implements Runnable {
 		response.setRequest(request);
 		response.sendMessage();
 	}
+
+	public boolean ifShutdownCommand() {
+		return request.getURL().equals(Const.SHUTDOWN_COMMAND);
+	}
 }

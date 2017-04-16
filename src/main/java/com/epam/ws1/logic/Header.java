@@ -24,11 +24,13 @@ public class Header {
 	}
 
 	public String buildHeader() {
-		return buildStatusLine(code) + buildHeaderFields(location, contentLength, contentType);
+		String sl = buildStatusLine(code);
+		String hf = buildHeaderFields(location, contentLength, contentType);
+		return sl+hf;
 	}
 
 	private String buildHeaderFields(String location, int contentLength, String contentType) {
-		String s = null;
+		String s = "";
 		if (location != null) {
 			s = Const.LOCATION + location + Const.NEW_LINE;
 		}
@@ -44,7 +46,7 @@ public class Header {
 	}
 
 	private String buildStatusLine(int code) {
-		return Const.PROTOCOL + code + getPhrase(code) + Const.NEW_LINE;
+		return Const.PROTOCOL+" " + code +" "+ getPhrase(code) + Const.NEW_LINE;
 	}
 
 	private String getPhrase(int code) {

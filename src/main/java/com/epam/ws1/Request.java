@@ -106,5 +106,7 @@ public class Request {
 	public void setBody(List<String> body) {
 		this.body = body;
 	}
-
+	public String getURL() {
+		return headerFields.get(Const.URI);
+	}
 }

@@ -1,5 +1,8 @@
 package com.epam.ws1.logic.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -29,75 +32,100 @@ public class GETAnalyzer implements Analyzer {
 		String filePath = null;
 		int contentLength = 0;
 		try {
-			filePath = analyzeURL(getUrlFromUri(uri)) 
-					+ getFileTypeFromAcceptField(contentType);
+			filePath = analyzeURL(getUrlFromUri(uri));
+			// + getFileTypeFromAcceptField(contentType);
 		} catch (ValidationException e) {
 			System.out.println(e);
 			e.printStackTrace();
-			code=500;
+			code = 500;
 		}
 		if (code == 200) {
-			contentLength = getSource(filePath); 
+			body = getSource(filePath);
+			contentLength = body.length();
 		}
-		Header header= new Header(code, contentLength, contentType);
-		return header.buildHeader()+body;
+		Header header = new Header(code, contentLength, contentType);
+		return body != null ? header.buildHeader() +Const.NEW_LINE+ body : header.buildHeader();
 	}
 
-	private int getSource(String filePath) {
+	private String getSource(String filePath) {
 		InputStream strm = null;
-		int count = 0;
+		String body = null;
 		try {
 			if (filePath != null) {
 				strm = Server.class.getResourceAsStream(filePath);
 			}
 			code = (strm != null) ? 200 : 404;
 			if (code == 200) {
-				byte[] buffer = new byte[1024];
-				StringBuffer tempbody = new StringBuffer(2048);
-				while ((count = strm.read(buffer)) != -1) {
-					tempbody.append((char) buffer[count]);
-				}
+				body =readFile(filePath);
 				strm.close();
 			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			code = 404;
 		} catch (IOException e) {
 			e.printStackTrace();
 			code = 500;
 		}
-		return count;
+		return body;
+	}
+
+	private String readFile(String filePath) throws IOException {
+		byte[] bytes = new byte[Const.BUFFER_SIZE];
+		FileInputStream fis = null;
+		StringBuilder body = new StringBuilder();
+		File file = new File(System.getProperty("user.dir") + filePath);
+		if (file.exists()) {
+			fis = new FileInputStream(file);
+			int ch = fis.read(bytes, 0, Const.BUFFER_SIZE);
+			if (ch != -1) {
+				for (int j = 0; j < ch; j++) {
+					body.append((char) bytes[j]);
+				}
+			}
+		} else {
+			return null;
+		}
+		if (fis != null)
+			fis.close();
+		return body.toString(); 
 	}
 
 	private String analyzeURL(String url) throws ValidationException {
 		// return file if exist, check accept before
-		String filePath = null;
+		String filePath = url;
 
 		if (url.equals("/")) {
 			code = 404;
-		}
-		if (param.size() == 0) {
-			if (url.equals("/book")) {
-				filePath = Const.BASE_FILE_PATH;
-				code = 200;
-			}
 		} else {
-			// findBook
-			BooksService bs = new BooksService();
-			Book book = bs.findBook(param.get("id"));
-			if (book != null) {
-				code = 200;
-				bs.parseToXML(book);
-				filePath = Const.TEMP_FILE_PATH;
+			if (param.size() == 0) {
+				if (url.equals("/book")) {
+					code = 200;
+					return filePath = Const.FILE_BASE;
+				} else {
+					code = 200;
+					filePath=Const.DEFAULT_FILES_DIR+url;
+				}
+			} else {
+				// findBook
+				BooksService bs = new BooksService();
+				Book book = bs.findBook(param.get("id"));
+				if (book != null) {
+					code = 200;
+					bs.parseToXML(book);
+					filePath = Const.TEMP_FILE_PATH;// == url
+				}
 			}
 		}
 		return filePath;
 	}
-
+/*
 	private String getFileTypeFromAcceptField(String acceptField) {
 		int index = acceptField.indexOf('/');
 		if (index != -1) {
 			return acceptField.substring(index + 1, acceptField.length() - 1);
 		}
 		return null;
-	}
+	}*/
 
 	private String getUrlFromUri(String uri) {
 		String url[] = uri.split("\\?");

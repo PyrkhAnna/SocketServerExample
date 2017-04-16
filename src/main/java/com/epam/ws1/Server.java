@@ -1,12 +1,11 @@
 package com.epam.ws1;
 
 import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+	private static boolean shutdown = false;
 
 	public static void main(String[] args) {
 
@@ -24,15 +23,21 @@ public class Server {
 			System.exit(-1);
 		}
 
-		while (true) {
+		while (!shutdown) {
 			try {
+				//InputStream input = null;
+				//OutputStream output = null;
+
 				Socket clientSocket = serverSocket.accept();
 				ClientSession session = new ClientSession(clientSocket);
-				new Thread(session).start();
-				// session.run();
+				//new Thread(session).start();
+				 session.run();
 
 				// Close the socket
 				//serverSocket.close();
+				// check if the previous URI is a shutdown command
+					shutdown = session.ifShutdownCommand();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Failed to establish connection.");
