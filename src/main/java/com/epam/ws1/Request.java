@@ -1,4 +1,4 @@
-package com.epam.web;
+package com.epam.ws1;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -8,14 +8,8 @@ import java.util.Map;
 import java.io.IOException;
 
 public class Request {
-	private final static String CONTENT_TYPE = "Content-Type:";
-	private final static String CONTENT_LENGTH = "Content-Length:";
-	private final static String ACCEPT_TYPE = "Accept:";
-	//private final static String METHOD_TYPE = "methodType";
-	//private final static String URI = "uri";
+	
 	private InputStream input;
-	private String methodType;
-	private String uri;
 	private List<String> body;
 	private Map<String, String> headerFields;
 
@@ -44,15 +38,13 @@ public class Request {
 		}
 		// System.out.println(header.toString());
 		// System.out.println(body.toString());
-		headerFields.put(CONTENT_TYPE, getFromHeader(header, CONTENT_TYPE));
-		headerFields.put(CONTENT_LENGTH, getFromHeader(header, CONTENT_LENGTH));
-		headerFields.put(ACCEPT_TYPE, getFromHeader(header, ACCEPT_TYPE));
-		//headerFields.put(URI, getURIFromHeader(str[0]));
-		//headerFields.put(METHOD_TYPE, getMethod(header.get(0).trim()));
-		uri = getURIFromHeader(str[0]);
-		methodType = getMethod(header.get(0).trim());
-		System.out.println(uri);
-		System.out.println(methodType);
+		headerFields.put(Const.CONTENT_TYPE, getFromHeader(header, Const.CONTENT_TYPE));
+		headerFields.put(Const.CONTENT_LENGTH, getFromHeader(header, Const.CONTENT_LENGTH));
+		headerFields.put(Const.ACCEPT_TYPE, getFromHeader(header, Const.ACCEPT_TYPE));
+		headerFields.put(Const.URI, getURIFromHeader(str[0]));
+		headerFields.put(Const.METHOD_TYPE, getMethod(header.get(0).trim()));
+		System.out.println(headerFields.get(Const.URI));
+		System.out.println(headerFields.get(Const.METHOD_TYPE));
 	}
 
 	private String[] flushBuffer() {
@@ -79,7 +71,7 @@ public class Request {
 		if (to!=-1) {
 		 uri = header.substring(from, to);
 		} else 
-			uri = header.substring(from, header.length()-1);
+			uri = header.substring(from, to);
 		int paramIndex = uri.indexOf("?");
 		if (paramIndex != -1) {
 			uri = uri.substring(0, paramIndex);
@@ -107,33 +99,12 @@ public class Request {
 	public Map<String, String> getHeaderFields() {
 		return headerFields;
 	}
-
-	public void setHeaderFields(Map<String, String> headerFields) {
-		this.headerFields = headerFields;
-	}
-
+	
 	public List<String> getBody() {
 		return body;
 	}
-
 	public void setBody(List<String> body) {
 		this.body = body;
-	}
-
-	public String getMethodType() {
-		return methodType;
-	}
-
-	public void setMethodType(String methodType) {
-		this.methodType = methodType;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
 	}
 
 }

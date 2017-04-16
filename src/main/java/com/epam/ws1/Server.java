@@ -1,4 +1,4 @@
-package com.epam.web;
+package com.epam.ws1;
 
 import java.io.IOException;
 //import java.io.InputStream;
@@ -7,19 +7,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-	private static final int DEFAULT_PORT = 7777;
-	
-
-	// the shutdown command received
-//	private static boolean shutdown = false;
 
 	public static void main(String[] args) {
-		/* Если аргументы отсутствуют, порт принимает значение поумолчанию */
-		int port = DEFAULT_PORT;
+
+		int port = Const.DEFAULT_PORT;
 		if (args.length > 0) {
 			port = Integer.parseInt(args[0]);
 		}
-		/* Создаем серверный сокет на полученном порту */
+
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(port);
@@ -28,33 +23,22 @@ public class Server {
 			System.out.println("Port " + port + " is blocked.");
 			System.exit(-1);
 		}
-		
-		// Loop waiting for a request
-		//while (!shutdown) {
-			 while (true) {
+
+		while (true) {
 			try {
 				Socket clientSocket = serverSocket.accept();
-				/*
-				 * Для обработки запроса от каждого клиента создается отдельный
-				 * объект и отдельный поток
-				 */
 				ClientSession session = new ClientSession(clientSocket);
 				new Thread(session).start();
-				//session.run();
-				
-				// Close the socket
-			//	socket.close();
+				// session.run();
 
-				// check if the previous URI is a shutdown command
-		//		shutdown = session.ifShutdownCommand();
+				// Close the socket
+				//serverSocket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Failed to establish connection.");
 				System.out.println(e.getMessage());
 				continue;
-			} 
-
+			}
 		}
 	}
-
 }
