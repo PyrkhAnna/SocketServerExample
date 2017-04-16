@@ -67,15 +67,16 @@ public class Request {
 	private String getURIFromHeader(String header) {
 		int from = header.indexOf(" ") + 1;
 		int to = header.indexOf(" ", from);
-		String uri;
+		String uri = null;
 		if (to!=-1) {
 		 uri = header.substring(from, to);
-		} else 
-			uri = header.substring(from, to);
-		int paramIndex = uri.indexOf("?");
-		if (paramIndex != -1) {
-			uri = uri.substring(0, paramIndex);
 		}
+		//else 
+	//		uri = header.substring(from, to);
+	//	int paramIndex = uri.indexOf("?");
+	//	if (paramIndex != -1) {
+	//		uri = uri.substring(0, paramIndex);
+	//	}
 		return uri;
 	}
 

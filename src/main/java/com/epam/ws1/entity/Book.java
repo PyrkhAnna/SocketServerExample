@@ -1,9 +1,6 @@
 package com.epam.ws1.entity;
 
-
-
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -26,7 +23,7 @@ public class Book implements Serializable {
 	public int getId() {
 		return id;
 	}
-	@XmlElement
+	@XmlElement//(name = "id")
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -34,7 +31,7 @@ public class Book implements Serializable {
 	public String getAuthor() {
 		return author;
 	}
-	@XmlElement
+	@XmlElement//(name = "author")
 	public void setAuthor(String author) {
 		this.author = author;
 	}

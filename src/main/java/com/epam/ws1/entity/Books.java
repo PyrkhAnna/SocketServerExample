@@ -14,6 +14,9 @@ public class Books implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<Book> bookList = new ArrayList<Book>();
 
+	public Books() {
+		
+	}
 	public Books(Collection<? extends Book> c) {
 		bookList = new ArrayList<Book>(c);
 	}

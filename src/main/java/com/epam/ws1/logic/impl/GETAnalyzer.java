@@ -139,9 +139,9 @@ public class GETAnalyzer implements Analyzer {
 
 	private void getParam(String[] url) {
 		param = new HashMap<String, String>();
-		String[] str;
-		for (int i = 1; i > url.length; i++) {
-			str = url[i].split("=");
+		//String[] str ;
+		for (int i = 1; i < url.length; i++) {   //////?????
+			String[] str = url[i].split("=");
 			param.put(str[0], str[1]);
 		}
 	}
