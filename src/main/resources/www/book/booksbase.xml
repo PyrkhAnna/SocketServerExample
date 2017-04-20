@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <books>
     <book>
-        <author>John</author>
+        <author>Tom</author>
         <id>1</id>
     </book>
     <book>
@@ -17,7 +17,7 @@
         <id>4</id>
     </book>
     <book>
-        <author>Max</author>
-        <id>5</id>
+        <author>Graf</author>
+        <id>6</id>
     </book>
 </books>

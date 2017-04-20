@@ -24,7 +24,7 @@ public class Books implements Serializable {
 	public boolean addBook(Book book) {
 		return bookList.add(book);
 	}
-	public Book getBook(String id) {
+	public Book getBook(String id) throws NumberFormatException {// java.lang.NumberFormatException: For input string: "true"
 		return bookList.stream().filter(t -> t.getId()== Integer.parseInt(id)).findFirst().orElse(null);
 	}
 	public Book getBook(int id) {

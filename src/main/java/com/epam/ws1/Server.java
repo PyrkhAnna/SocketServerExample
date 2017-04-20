@@ -34,9 +34,9 @@ public class Server {
 				 session.run();
 
 				// Close the socket
-				//serverSocket.close();
+				clientSocket.close();
 				// check if the previous URI is a shutdown command
-					shutdown = session.ifShutdownCommand();
+				shutdown = session.ifShutdownCommand();
 
 			} catch (Exception e) {
 				e.printStackTrace();

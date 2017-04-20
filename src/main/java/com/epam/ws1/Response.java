@@ -11,30 +11,29 @@ public class Response {
 	
 	private OutputStream output;
 	private String message;
-	private Map<String, String> requestHeaderFields;
+	private Map<String, String> requestParametersSet;
 
 	public Response(OutputStream output) {
 		this.output = output;
 		message = null;
-		requestHeaderFields = new HashMap<String, String>();
+		requestParametersSet = new HashMap<String, String>();
 	}
 
 	public void sendMessage() {
-		String method = requestHeaderFields.get(Const.METHOD_TYPE);
+		String method = requestParametersSet.get(Const.METHOD_TYPE);
 		AnalyzerFactory factory = new AnalyzerFactory();
-		Analyzer analyzer = factory.createAnalyzer(method,requestHeaderFields);
+		Analyzer analyzer = factory.createAnalyzer(method,requestParametersSet);
 		message = analyzer.getMessage();
 		try {
 			if (message != null) {
 				output.write(message.getBytes());
-				//message = null;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public void setRequest(Request request) {
-		requestHeaderFields = request.getHeaderFields();
+		requestParametersSet = request.getParametersSet();
 	}
 	
 }

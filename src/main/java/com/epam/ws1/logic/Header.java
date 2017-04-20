@@ -9,13 +9,12 @@ public class Header {
 	private int contentLength;
 	private String contentType;
 
-	public Header(int code, String location, int contentLength, String contentType) {
+	public Header(int code, String location) {
 		super();
 		this.code = code;
 		this.location = location;
-		this.contentLength = contentLength;
-		this.contentType = contentType;
 	}
+
 	public Header(int code, int contentLength, String contentType) {
 		super();
 		this.code = code;
@@ -23,10 +22,15 @@ public class Header {
 		this.contentType = contentType;
 	}
 
+	public Header(int code) {
+		super();
+		this.code = code;
+	}
+
 	public String buildHeader() {
 		String sl = buildStatusLine(code);
 		String hf = buildHeaderFields(location, contentLength, contentType);
-		return sl+hf;
+		return sl + hf;
 	}
 
 	private String buildHeaderFields(String location, int contentLength, String contentType) {
@@ -34,19 +38,19 @@ public class Header {
 		if (location != null) {
 			s = Const.LOCATION + location + Const.NEW_LINE;
 		}
-		s = s + Const.DATE + new Date().toString() + Const.NEW_LINE 
-				+ Const.SERVER + Const.NEW_LINE;
-		if (contentLength != 0 ) {
+		s = s + Const.DATE + new Date().toString() + Const.NEW_LINE + Const.SERVER + Const.NEW_LINE;
+		if (contentLength != 0) {
 			s = s + Const.CONTENT_LENGTH + contentLength + Const.NEW_LINE;
 		}
-				
-		s = s 	+ Const.CONTENT_TYPE + contentType + Const.NEW_LINE 
-				+ Const.CONNECTION + Const.NEW_LINE;
+		if (contentLength != 0) {
+			s = s + Const.CONTENT_TYPE + contentType + Const.NEW_LINE;
+		}
+		s = s + Const.CONNECTION + Const.NEW_LINE;
 		return s;
 	}
 
 	private String buildStatusLine(int code) {
-		return Const.PROTOCOL+" " + code +" "+ getPhrase(code) + Const.NEW_LINE;
+		return Const.PROTOCOL + " " + code + " " + getPhrase(code) + Const.NEW_LINE;
 	}
 
 	private String getPhrase(int code) {
@@ -55,6 +59,8 @@ public class Header {
 			return "OK";
 		case 201:
 			return "Created";
+		case 301:
+			return "Moved Permanently";
 		case 400:
 			return "Bad Request";
 		case 404:

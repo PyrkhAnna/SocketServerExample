@@ -1,6 +1,5 @@
 package com.epam.ws1.logic;
 
-import java.util.List;
 import javax.xml.bind.ValidationException;
 import com.epam.ws1.Const;
 import com.epam.ws1.entity.Book;
@@ -25,18 +24,45 @@ public class BooksService {
 		return books.getBook(id);
 	}
 
-	public List<Book> findAllBooks() {
-		return books.getBookList();
+	public Books findAllBooks() {
+		return books;
 	}
 
-	public boolean createBook(Book book) throws ValidationException { // put
+	/*public boolean addBook(Book book) throws ValidationException { // put
 		if (book == null) {
 			throw new ValidationException("Book object is null");
 		}
-		if (books.getBook(book.getId()) == null) {
+		if (books.getBook(book.getId()) != null) {
 			throw new ValidationException("Book object already exist");
 		}
 		return books.addBook(book);
+	}*/
+	public boolean createBook(String id, String author) throws ValidationException { // put
+		if (author == null) {
+			throw new ValidationException("Author field is null");
+		}
+		if (books.getBook(id) != null) {
+			throw new ValidationException("Object with same Book Id already exist");
+		}
+		return books.addBook(new Book(Integer.parseInt(id), author));
+	}
+	
+	public boolean updateBook(String id, String author) throws ValidationException { // post
+		if (id==null||author == null) {
+			throw new ValidationException("Value fields is incorrect");
+		} 
+		boolean flag= false;
+		Book book = books.getBook(id);
+		if (book!= null) {
+			book.setAuthor(author);
+			flag = true;
+		} else {
+			 flag = createBook(id, author);
+		}
+		if (flag==true) {
+			parseToXML(books);
+		}
+		return flag;
 	}
 
 	public boolean deleteBook(String id) throws ValidationException {

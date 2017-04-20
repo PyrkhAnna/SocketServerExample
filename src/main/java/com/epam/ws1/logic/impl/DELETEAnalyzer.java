@@ -10,40 +10,40 @@ import com.epam.ws1.Server;
 import com.epam.ws1.entity.Book;
 import com.epam.ws1.logic.Header;
 
-public class GETAnalyzer extends AbsractAnalyzer {
+public class DELETEAnalyzer extends AbsractAnalyzer {
 	private String uri;
 	private String contentType;
 	private Map<String, String> param;
 	private int code;
 	private String body;
 
-	public GETAnalyzer(String uri, String contentType) {
+	public DELETEAnalyzer(String uri, String contentType) {
+		super();
 		this.uri = uri;
 		this.contentType = contentType;
 	}
 
 	@Override
 	public String getMessage() {
-		String fileUrl = null;
-		int contentLength = 0;
 		try {
-			fileUrl = analyzeURL(getUrlFromUri(uri));
+			code = analyzeURL(getUrlFromUri(uri));
 			// + getFileTypeFromAcceptField(contentType);
 		} catch (ValidationException e) {
 			System.out.println(e);
 			e.printStackTrace();
-			code = 500;
+			code = 400;
 		}
+
 		if (code == 200) {
+			String fileUrl = Const.DEFAULT_FILES_DIR + Const.TEMP_FILE;
 			body = getSource(fileUrl);
-			contentLength = body.length();
 		} else {
 			body = Const.ERROR_BODY;
 			contentType = "text/html";
-			contentLength = body.length();
 		}
+		int contentLength = body.length();
 		Header header = new Header(code, contentLength, contentType);
-		return body != null ? header.buildHeader() +Const.NEW_LINE+ body : header.buildHeader();
+		return body != null ? header.buildHeader() + Const.NEW_LINE + body : header.buildHeader();
 	}
 
 	private String getSource(String fileUrl) {
@@ -54,9 +54,9 @@ public class GETAnalyzer extends AbsractAnalyzer {
 				strm = Server.class.getResourceAsStream(fileUrl);
 			}
 			code = (strm != null) ? 200 : 404;
-			if (code==200) {
-				String filePath= Const.DEFAULT_FILES_DIR_FOR_READING_FILES+fileUrl;
-				body =readFile(filePath);
+			if (code == 200) {
+				String filePath = Const.DEFAULT_FILES_DIR_FOR_READING_FILES + fileUrl;
+				body = readFile(filePath);
 				strm.close();
 			}
 		} catch (FileNotFoundException e) {
@@ -69,41 +69,50 @@ public class GETAnalyzer extends AbsractAnalyzer {
 		return body;
 	}
 
-	private String analyzeURL(String url) throws ValidationException {
-		// return file if exist, check accept before
-		if (url.equals("/book")||url.equals("/book/")) {
+	private int analyzeURL(String url) throws ValidationException {
+		int code;
+		if (url.equals("/book") || url.equals("/book/")) {
 			if (param.size() == 0) {
-				code = 200;
-				url = Const.DEFAULT_FILES_DIR+Const.FILE_BASE;
-			}  else {
-				url = findBookURL();
+				code = 400;
+			} else {
+				code = deleteBook(param.get("id"));
 			}
-		}  else {
+		} else {
 			code = 400;
 		}
-		return url;
+		return code;
 	}
-	private String findBookURL() throws ValidationException {
-		String url = null;
-		Book book = bs.findBook(param.get("id"));
+
+	private Book findBook(String id) throws ValidationException {
+		// findBook and check
+		Book book = bs.findBook(id);
 		if (book != null) {
 			code = 200;
 			bs.parseToXML(book);
-			url = Const.DEFAULT_FILES_DIR+ Const.TEMP_FILE;
 		} else {
-			code = 500;
-			url=Const.DEFAULT_FILES_DIR+Const.ERROR_PATH_500;
+			code = 404;
 		}
-		return url;
+		return book;
 	}
-/*
-	private String getFileTypeFromAcceptField(String acceptField) {
-		int index = acceptField.indexOf('/');
-		if (index != -1) {
-			return acceptField.substring(index + 1, acceptField.length() - 1);
+
+	private int deleteBook(String id) throws ValidationException {
+		int code = 0;
+		if (findBook(id) != null) {
+			code = deleteBookFromBase(id);
+			updateBookBase();
+		} else {
+			code = 404;
 		}
-		return null;
-	}*/
+		return code;
+	}
+
+	private int deleteBookFromBase(String id) throws ValidationException {
+		return bs.deleteBook(id) ? 200 : 500;
+	}
+
+	private void updateBookBase() {
+		bs.parseToXML(bs.findAllBooks());
+	}
 
 	private String getUrlFromUri(String uri) {
 		String url[] = uri.split("\\?");

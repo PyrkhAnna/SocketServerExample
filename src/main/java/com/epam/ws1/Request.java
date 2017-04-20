@@ -10,17 +10,17 @@ import java.io.IOException;
 public class Request {
 	
 	private InputStream input;
-	private List<String> body;
-	private Map<String, String> headerFields;
+	//private StringBuffer body;
+	private Map<String, String> paramSet;
 
 	public Request(InputStream input) {
 		this.input = input;
-		body = new ArrayList<String>();
-		headerFields = new HashMap<String, String>();
+		paramSet = new HashMap<String, String>();
 	}
 
 	public void parse() throws IOException {
 		List<String> header = new ArrayList<String>();
+		StringBuffer body = new StringBuffer();
 		String[] str = flushBuffer();
 		int i = 0;
 		boolean flag = false;
@@ -32,19 +32,20 @@ public class Request {
 			if (!flag) {
 				header.add(str[i]);
 			} else {
-				//body.add(str[i]);
+				body.append(str[i]);
 			}
 			i++;
 		}
-		// System.out.println(header.toString());
-		// System.out.println(body.toString());
-		headerFields.put(Const.CONTENT_TYPE, getFromHeader(header, Const.CONTENT_TYPE));
-		headerFields.put(Const.CONTENT_LENGTH, getFromHeader(header, Const.CONTENT_LENGTH));
-		headerFields.put(Const.ACCEPT_TYPE, getFromHeader(header, Const.ACCEPT_TYPE));
-		headerFields.put(Const.URI, getURIFromHeader(str[0]));
-		headerFields.put(Const.METHOD_TYPE, getMethod(header.get(0).trim()));
-		System.out.println(headerFields.get(Const.URI));
-		System.out.println(headerFields.get(Const.METHOD_TYPE));
+		
+		paramSet.put(Const.CONTENT_TYPE, getFromHeader(header, Const.CONTENT_TYPE));
+		paramSet.put(Const.CONTENT_LENGTH, getFromHeader(header, Const.CONTENT_LENGTH));
+		paramSet.put(Const.ACCEPT_TYPE, getFromHeader(header, Const.ACCEPT_TYPE));
+		paramSet.put(Const.URI, getURIFromHeader(str[0]));
+		paramSet.put(Const.METHOD_TYPE, getMethod(header.get(0).trim()));
+		paramSet.put(Const.BODY, body.toString());
+		System.out.println(paramSet.get(Const.METHOD_TYPE));
+		System.out.println(paramSet.get(Const.URI));
+		System.out.println(paramSet.get(Const.BODY));
 	}
 
 	private String[] flushBuffer() {
@@ -71,12 +72,6 @@ public class Request {
 		if (to!=-1) {
 		 uri = header.substring(from, to);
 		}
-		//else 
-	//		uri = header.substring(from, to);
-	//	int paramIndex = uri.indexOf("?");
-	//	if (paramIndex != -1) {
-	//		uri = uri.substring(0, paramIndex);
-	//	}
 		return uri;
 	}
 
@@ -97,17 +92,11 @@ public class Request {
 		return str.substring(0, to);
 	}
 
-	public Map<String, String> getHeaderFields() {
-		return headerFields;
+	public Map<String, String> getParametersSet() {
+		return paramSet;
 	}
-	
-	public List<String> getBody() {
-		return body;
-	}
-	public void setBody(List<String> body) {
-		this.body = body;
-	}
+		
 	public String getURL() {
-		return headerFields.get(Const.URI);
+		return paramSet.get(Const.URI);
 	}
 }

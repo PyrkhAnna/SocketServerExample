@@ -13,10 +13,13 @@ public class Const {
 	
 	public static final String FILE_BASE = "/book/booksbase.xml";
 	public static final String TEMP_FILE = "/2.xml";
-	
+	public static final String ERROR_BODY = "<!DOCTYPE HTML> <html><head><title>Error</title></head><body><h1>Error</h1></body></html>";
+	public static final String ERROR_PATH_500 = "/500.html";
+	public static final String ERROR_PATH_400 = "/400.html";
 	public static final int BUFFER_SIZE = 1024;
 	public static final String METHOD_TYPE = "Method";
 	public static final String URI = "URI";
+	public static final String BODY = "Body";
 	public static final String METHOD_GET = "GET";
 	public static final String METHOD_PUT = "PUT";
 	public static final String METHOD_DELETE = "DELETE";
@@ -33,5 +36,7 @@ public class Const {
 	public static final String ACCEPT_TYPE = "Accept: ";
 	public static final String CONNECTION = "Connection: Closed";
 	public static final String NEW_LINE = "\r\n";
+	public static final String ID = "id";
+	public static final String AUTHOR = "author";
 
 }
