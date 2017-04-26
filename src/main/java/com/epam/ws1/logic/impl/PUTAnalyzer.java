@@ -58,17 +58,14 @@ public class PUTAnalyzer extends AbsractAnalyzer {
 
 	private boolean createFile(String filePath) throws IOException {
 		return new File(filePath).createNewFile();
-
 	}
 
 	private boolean ifFileExist(String uri) throws IOException {
 		return new File(System.getProperty("user.dir") + Const.DEFAULT_FILES_DIR_FOR_READING_FILES +Const.DEFAULT_FILES_DIR+ uri).exists();
-
 	}
 
 	private String createNewFileName() throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		return sdf.format(System.currentTimeMillis()) + ".xml";
 	}
-
 }

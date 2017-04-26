@@ -12,6 +12,7 @@ import com.epam.ws1.logic.BooksService;
 public abstract class AbsractAnalyzer implements Analyzer {
 	public BooksService bs = new BooksService();
 	
+	
 	public Map<String, String> getParam(String[] stringParam) {
 		Map<String, String> paramSet = new HashMap<String, String>();
 		for (int i = 0; i < stringParam.length; i++) {   
