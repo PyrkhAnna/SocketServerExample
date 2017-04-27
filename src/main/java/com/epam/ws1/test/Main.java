@@ -1,7 +1,5 @@
 package com.epam.ws1.test;
 
-import java.io.File;
-
 import com.epam.ws1.Const;
 import com.epam.ws1.entity.Book;
 import com.epam.ws1.entity.Books;

@@ -38,6 +38,6 @@ public class ClientSession implements Runnable {
 	}
 
 	public boolean ifShutdownCommand() {
-		return request.getURL().equals(Const.SHUTDOWN_COMMAND);
+		return request.getUri().equals(Const.SHUTDOWN_COMMAND);
 	}
 }
