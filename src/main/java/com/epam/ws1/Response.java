@@ -10,28 +10,20 @@ import java.io.IOException;
 public class Response {
 	
 	private OutputStream output;
-	private Request request;
-	private String protocolVersion;
-	private int code;
-	private String codePhrase;
-	
-	private String location;
-	private String contentType;
-	private String contentLength;
-	private String body;
-	//private String message;
+	private String message;
 	private Map<String, String> requestParametersSet;
 
 	public Response(OutputStream output) {
 		this.output = output;
-		//message = null;
+		message = null;
 		requestParametersSet = new HashMap<String, String>();
 	}
 
 	public void sendMessage() {
+		String method = requestParametersSet.get(Const.METHOD_TYPE);
 		AnalyzerFactory factory = new AnalyzerFactory();
-		Analyzer analyzer = factory.createAnalyzer(request);
-		String message = analyzer.getMessage();
+		Analyzer analyzer = factory.createAnalyzer(method,requestParametersSet);
+		message = analyzer.getMessage();
 		try {
 			if (message != null) {
 				output.write(message.getBytes());
@@ -41,7 +33,7 @@ public class Response {
 		}
 	}
 	public void setRequest(Request request) {
-		this.request = request;
+		requestParametersSet = request.getParametersSet();
 	}
 	
 }

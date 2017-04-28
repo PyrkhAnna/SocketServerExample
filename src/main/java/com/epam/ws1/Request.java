@@ -10,74 +10,12 @@ import java.io.IOException;
 public class Request {
 	
 	private InputStream input;
-	private String methodType;
-	private String uri;
-	private String protocolVersion;
-	private String contentType;
-	private String contentLength;
-	private String acceptType;
-	private String body;
+	//private StringBuffer body;
 	private Map<String, String> paramSet;
 
 	public Request(InputStream input) {
 		this.input = input;
 		paramSet = new HashMap<String, String>();
-	}
-
-	public String getMethodType() {
-		return methodType;
-	}
-
-	public void setMethodType(String methodType) {
-		this.methodType = methodType;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public String getProtocolVersion() {
-		return protocolVersion;
-	}
-
-	public void setProtocolVersion(String protocolVersion) {
-		this.protocolVersion = protocolVersion;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	public String getContentLength() {
-		return contentLength;
-	}
-
-	public void setContentLength(String contentLength) {
-		this.contentLength = contentLength;
-	}
-
-	public String getAcceptType() {
-		return acceptType;
-	}
-
-	public void setAcceptType(String acceptType) {
-		this.acceptType = acceptType;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
 	}
 
 	public void parse() throws IOException {
@@ -98,20 +36,13 @@ public class Request {
 			}
 			i++;
 		}
-		methodType=getMethod(header.get(0).trim());
-		uri=getURIFromHeader(str[0]);
-		protocolVersion = Const.PROTOCOL;
-		contentType = getFromHeader(header, Const.CONTENT_TYPE);
-		contentLength = getFromHeader(header, Const.CONTENT_LENGTH);
-		acceptType = getFromHeader(header, Const.ACCEPT_TYPE);
-		this.body = body.toString();
-				
-		paramSet.put(Const.CONTENT_TYPE, contentType);
-		paramSet.put(Const.CONTENT_LENGTH, contentLength);
-		paramSet.put(Const.ACCEPT_TYPE, acceptType);
-		paramSet.put(Const.URI, uri);
-		paramSet.put(Const.METHOD_TYPE, methodType);
-		paramSet.put(Const.BODY, this.body);
+		
+		paramSet.put(Const.CONTENT_TYPE, getFromHeader(header, Const.CONTENT_TYPE));
+		paramSet.put(Const.CONTENT_LENGTH, getFromHeader(header, Const.CONTENT_LENGTH));
+		paramSet.put(Const.ACCEPT_TYPE, getFromHeader(header, Const.ACCEPT_TYPE));
+		paramSet.put(Const.URI, getURIFromHeader(str[0]));
+		paramSet.put(Const.METHOD_TYPE, getMethod(header.get(0).trim()));
+		paramSet.put(Const.BODY, body.toString());
 		System.out.println(paramSet.get(Const.METHOD_TYPE));
 		System.out.println(paramSet.get(Const.URI));
 		System.out.println(paramSet.get(Const.BODY));
@@ -163,5 +94,9 @@ public class Request {
 
 	public Map<String, String> getParametersSet() {
 		return paramSet;
+	}
+		
+	public String getURL() {
+		return paramSet.get(Const.URI);
 	}
 }

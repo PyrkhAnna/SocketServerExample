@@ -43,4 +43,26 @@ public abstract class AbsractAnalyzer implements Analyzer {
 			fis.close();
 		return body.toString(); 
 	}
+	public String getContentTypeFromAcceptField(String acceptField) {
+		if (acceptField.contains("application/xml")){
+			return "application/xml";
+		} else {
+			if (acceptField.contains("application/json")){
+				return "application/json"; 
+			} else {
+				if (acceptField.contains("*/*")) {
+					return "application/xml";
+				} else {
+					return null;
+				}
+			}
+		}
+	}
+	public String getFileTypeFromContentTypeField(String contentType) {
+		int index = contentType.indexOf('/');
+		if (index != -1) {
+			return contentType.substring(index + 1, contentType.length());
+		}
+		return null;
+	}
 }

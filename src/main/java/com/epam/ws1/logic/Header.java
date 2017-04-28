@@ -27,38 +27,6 @@ public class Header {
 		this.code = code;
 	}
 
-	public int getCode() {
-		return code;
-	}
-
-	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public int getContentLength() {
-		return contentLength;
-	}
-
-	public void setContentLength(int contentLength) {
-		this.contentLength = contentLength;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
 	public String buildHeader() {
 		String sl = buildStatusLine(code);
 		String hf = buildHeaderFields(location, contentLength, contentType);
@@ -75,7 +43,9 @@ public class Header {
 			s = s + Const.CONTENT_LENGTH + contentLength + Const.NEW_LINE;
 		}
 		if (contentLength != 0) {
-			s = s + Const.CONTENT_TYPE + contentType + Const.NEW_LINE;
+			s = s + Const.CONTENT_TYPE +contentType + Const.NEW_LINE;
+					//"text/xml" + Const.NEW_LINE;
+					//contentType + Const.NEW_LINE;
 		}
 		s = s + Const.CONNECTION + Const.NEW_LINE;
 		return s;

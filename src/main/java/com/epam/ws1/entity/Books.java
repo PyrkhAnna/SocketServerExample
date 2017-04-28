@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 @XmlRootElement(name = "books")
 @XmlSeeAlso(Book.class)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Books implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<Book> bookList = new ArrayList<Book>();

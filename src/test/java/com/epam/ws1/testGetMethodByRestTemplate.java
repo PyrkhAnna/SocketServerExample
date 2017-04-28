@@ -28,8 +28,7 @@ public class testGetMethodByRestTemplate {
 		headers.getContentType();
 		headers.getContentLength();
 		headers.getLocation();
-		String rpBody = response.getBody();
-		response.hasBody();
+		//String rp
 		
 	}
 }

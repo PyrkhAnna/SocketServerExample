@@ -4,39 +4,32 @@ import javax.xml.bind.ValidationException;
 import com.epam.ws1.Const;
 import com.epam.ws1.entity.Book;
 import com.epam.ws1.entity.Books;
+import com.epam.ws1.parser.BooksJSONParser;
 import com.epam.ws1.parser.BooksJaxBParser;
 
 public class BooksService {
-
 	private BooksJaxBParser parser;
+	private BooksJSONParser parserJson;
 	private Books books;
 	
 	public BooksService() {
 		super();
 		parser = new BooksJaxBParser();
+		parserJson = new BooksJSONParser();
 		books = parser.unmarshallList(Const.BASE_FILE_PATH);
 	}
 
-	public Book findBook(String id) throws ValidationException {
+	public Book findBook(String id) throws ValidationException { //get one
 		if (id == null) {
 			throw new ValidationException("Invalid book id");
 		}
 		return books.getBook(id);
 	}
 
-	public Books findAllBooks() {
+	public Books findAllBooks() { // get all
 		return books;
 	}
 
-	/*public boolean addBook(Book book) throws ValidationException { // put
-		if (book == null) {
-			throw new ValidationException("Book object is null");
-		}
-		if (books.getBook(book.getId()) != null) {
-			throw new ValidationException("Book object already exist");
-		}
-		return books.addBook(book);
-	}*/
 	public boolean createBook(String id, String author) throws ValidationException { // put
 		if (author == null) {
 			throw new ValidationException("Author field is null");
@@ -65,7 +58,7 @@ public class BooksService {
 		return flag;
 	}
 
-	public boolean deleteBook(String id) throws ValidationException {
+	public boolean deleteBook(String id) throws ValidationException { // delete
 		if (id == null) {
 			throw new ValidationException("Invalid book id");
 		}
@@ -76,5 +69,17 @@ public class BooksService {
 	}
 	public void parseToXML(Book book) {
 		parser.marshall(book);
+	}
+	public Books parseBooksFromJSON(String body) {
+		return parserJson.convertToBooks(body);
+	}
+	public Book parseBookFromJSON(String body) {
+		return parserJson.convertToBook(body);
+	}
+	public void parseToJSON(Books books) {
+		parserJson.parse(books);
+	}
+	public void parseToJSON(Book book) {
+		parserJson.parse(book);
 	}
 }

@@ -10,12 +10,13 @@ import com.epam.ws1.logic.Header;
 public class PUTAnalyzer extends AbsractAnalyzer {
 	private String uri;
 	private int code;
-	
+	private String fileType;
 	private String requestBody;
 
-	public PUTAnalyzer(String uri, String requestBody) {
+	public PUTAnalyzer(String uri, String requestBody, String contentType) {
 		this.uri = uri;
 		this.requestBody = requestBody;
+		this.fileType = getFileTypeFromContentTypeField(getFileTypeFromContentTypeField(contentType));
 	}
 
 	@Override
@@ -66,6 +67,6 @@ public class PUTAnalyzer extends AbsractAnalyzer {
 
 	private String createNewFileName() throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		return sdf.format(System.currentTimeMillis()) + ".xml";
+		return sdf.format(System.currentTimeMillis()) + "."+fileType;
 	}
 }

@@ -44,7 +44,7 @@ public class POSTAnalyzer extends AbsractAnalyzer {
 	}
 
 	private int analyzeURL(String url) {
-		return url.equals("/book/bookbase.xml") ? 200 : 400;
+		return url.equals("/book/bookbase.xml")||url.equals("/book/bookbase.json") ? 200 : 400;
 	}
 
 	private Map<String, String> getParamFromBody(String body) {

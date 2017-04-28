@@ -20,7 +20,7 @@ public class DELETEAnalyzer extends AbsractAnalyzer {
 	public DELETEAnalyzer(String uri, String contentType) {
 		super();
 		this.uri = uri;
-		this.contentType = contentType;
+		this.contentType = getContentTypeFromAcceptField(contentType);
 	}
 
 	@Override

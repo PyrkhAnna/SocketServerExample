@@ -14,12 +14,14 @@ public class GETAnalyzer extends AbsractAnalyzer {
 	private String uri;
 	private String contentType;
 	private Map<String, String> param;
+	private String fileType;
 	private int code;
 	private String body;
 
 	public GETAnalyzer(String uri, String contentType) {
 		this.uri = uri;
-		this.contentType = contentType;
+		this.contentType = getContentTypeFromAcceptField(contentType);
+		fileType= getFileTypeFromContentTypeField(this.contentType);
 	}
 
 	@Override
@@ -70,25 +72,38 @@ public class GETAnalyzer extends AbsractAnalyzer {
 	}
 
 	private String analyzeURL(String url) throws ValidationException {
-		// return file if exist, check accept before
+		// return fileUrl if exist, check accept before
 		if (url.equals("/book")||url.equals("/book/")) {
 			if (param.size() == 0) {
 				code = 200;
+				//url = fileType.equalsIgnoreCase("xml")||fileType.equalsIgnoreCase("*")?Const.DEFAULT_FILES_DIR+Const.FILE_BASE:Const.DEFAULT_FILES_DIR+Const.FILE_BASE_JSON;
 				url = Const.DEFAULT_FILES_DIR+Const.FILE_BASE;
 			}  else {
-				url = findBookURL();
+				url = findBookURL(fileType);
 			}
 		}  else {
 			code = 400;
 		}
 		return url;
 	}
-	private String findBookURL() throws ValidationException {
+	private String findBookURL(String fileType) throws ValidationException {
 		String url = null;
 		Book book = bs.findBook(param.get("id"));
 		if (book != null) {
 			code = 200;
-			bs.parseToXML(book);
+			switch (fileType.toUpperCase()){
+			case "XML":
+				bs.parseToXML(book);
+				break;
+			case "*":
+				bs.parseToXML(book);
+				break;
+			case "JSON":
+				bs.parseToJSON(book);
+				break;
+			default:
+				code = 404;
+			}
 			url = Const.DEFAULT_FILES_DIR+ Const.TEMP_FILE;
 		} else {
 			code = 500;
@@ -96,15 +111,6 @@ public class GETAnalyzer extends AbsractAnalyzer {
 		}
 		return url;
 	}
-/*
-	private String getFileTypeFromAcceptField(String acceptField) {
-		int index = acceptField.indexOf('/');
-		if (index != -1) {
-			return acceptField.substring(index + 1, acceptField.length() - 1);
-		}
-		return null;
-	}*/
-
 	private String getUrlFromUri(String uri) {
 		String url[] = uri.split("\\?");
 		if (url.length > 0) {
